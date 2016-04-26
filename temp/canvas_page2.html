@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <title></title>
+
+  <script>
+
+  //  context.lineWidth = 0.04;
+  //  context.translate(50, 50);
+  //  context.scale(30, 30);
+  //  context.moveTo(0.000000, 0.000000); // bulge=0.000000
+  //  context.lineTo(0.000000, 12.700000); // bulge=0.000000
+  //  context.lineTo(12.700000, 12.700000); // bulge=-52.605122
+
+  ////var angle = Math.atan(52.605 / 127.0) * 4.0;
+  //  var x1 = 12.7;
+  //  var y1 = 12.7;
+  //  var x2 = 9.53;
+  //  var y2 = 9.53;
+
+
+  //  var bulge = Math.abs(-52.605122); /// 128.0;
+  //  var chord = Math.sqrt(Math.pow(Math.abs(x2 - x1), 2) + Math.pow(Math.abs(y2 - y1), 2));
+  //  //var sagitta = chord / 2.0 * bulge;
+  //  var sagitta = bulge * chord / 254.0;
+  //  var radius = (Math.pow(chord / 2.0, 2) + Math.pow(sagitta, 2)) / 2.0 * sagitta;
+  //  radius += 0.5;
+  //  var midpoint_x = (x1 + x2) / 2.0;
+  //  var midpoint_y = (y1 + y2) / 2.0;
+
+  //  var ang_chord = Math.acos((x2 - x1) / chord);
+  //  var ang_sagitta = ang_chord;// ang_chord + 3.1415 / 2.0;
+
+
+  //  var sagitta_x = midpoint_x + sagitta * Math.sin(ang_sagitta);
+  //  var sagitta_y = midpoint_y + sagitta * Math.cos(ang_sagitta);
+
+  //  context.moveTo(midpoint_x, midpoint_y);
+  //  context.lineTo(sagitta_x, sagitta_y);
+
+  //  context.moveTo(x1, y1);
+
+  //  if (bulge == 0)
+  //  {
+
+  //  }
+  //  else if (bulge > 0) {
+  //    context.arcTo(x1, y2, x2, y2, radius);
+  //  }
+  //  else {
+  //    //context.arcTo(x2, y1, x2, y2, radius);
+  //    context.arcTo(sagitta_x, sagitta_y, x2, y2, radius);
+  //  }
+
+  //  context.moveTo(12.7, 12.7);
+  //  context.lineTo(9.530000, 9.530000); // bulge=0.000000
+  //  context.lineTo(6.340000, 9.530000); // bulge=52.605122
+  //  context.lineTo(3.170000, 6.360000); // bulge=0.000000
+  //  context.lineTo(3.170000, 3.170000); // bulge=-52.605122
+  //  context.lineTo(0.000000, -0.000000); // bulge=0.000000
+  //  //context.lineTo(4.233333, 8.466667); // bulge=5000.000000
+
+  //  context.stroke();
+
+
+  // ****************************
+
+  function on_click(evt)
+  {
+    desenha(evt.offsetX, evt.offsetY);
+  }
+
+  function desenha(d1_x, d1_y)
+  {
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.beginPath();
+
+    //  var d1_x = 10.0;
+    //  var d1_y = 100.0;
+    var d2_x = 410.0;
+    var d2_y = 400.0;
+
+    context.moveTo(d1_x, d1_y);
+    context.lineTo(d2_x, d2_y);
+    context.strokeStyle = "#0000FF";
+    context.stroke();
+
+    var sagitta = 100;
+
+    var h1_x = (d1_x + d2_x) / 2.0;
+    var h1_y = (d1_y + d2_y) / 2.0;
+
+    var chord = Math.sqrt(Math.pow(Math.abs(d2_x - d1_x), 2) + Math.pow(Math.abs(d2_y - d1_y), 2));
+
+    var ang_chord = Math.acos((d2_x - d1_x) / chord);
+
+    var ang_sagitta;
+
+    if (d1_y > d2_y)
+      ang_sagitta = ang_chord - Math.PI;
+    else
+      ang_sagitta = Math.PI - ang_chord;
+
+
+    var h2_x = h1_x + sagitta * Math.sin(ang_sagitta);
+    var h2_y = h1_y + sagitta * Math.cos(ang_sagitta);
+    var h2_x_bezier = h1_x + sagitta * 2.0 * Math.sin(ang_sagitta);
+    var h2_y_bezier = h1_y + sagitta * 2.0 * Math.cos(ang_sagitta);
+
+    context.moveTo(h1_x, h1_y);
+    context.lineTo(h2_x_bezier, h2_y_bezier);
+    context.strokeStyle = "#FF0000";
+
+    var band_count = 20;
+    var d_x_band = Math.abs(h2_x - d1_x) / band_count;
+    var d_y_band = Math.abs(h2_y_bezier - d1_y) / band_count;
+
+    var diag1_x1 = d1_x;
+    var diag1_y1 = d1_y;
+    var diag1_x2 = h2_x_bezier;
+    var diag1_y2 = h2_y_bezier;
+    var diag1_dx = diag1_x2 - diag1_x1;
+    var diag1_dy = diag1_y2 - diag1_y1;
+    var diag1_slope = diag1_dy / diag1_dx;
+
+    var diag2_x1 = h2_x_bezier;
+    var diag2_y1 = h2_y_bezier;
+    var diag2_x2 = d2_x;
+    var diag2_y2 = d2_y;
+    var diag2_dx = diag2_x2 - diag2_x1;
+    var diag2_dy = diag2_y2 - diag2_y1;
+    var diag2_slope = diag2_dy / diag2_dx;
+
+    context.moveTo(diag1_x1, diag1_y1);
+    context.lineTo(diag1_x2, diag1_y2);
+
+    for (var i = 0; i < band_count; i++)
+    {
+      var _dx_diag1 = diag1_dx / band_count * i;
+      var _dx_diag2 = diag2_dx / band_count * i;
+      context.moveTo(diag1_x1 + _dx_diag1, diag1_y1 + _dx_diag1 * diag1_slope, 2, 2);
+      context.lineTo(diag2_x1 + _dx_diag2, diag2_y1 + _dx_diag2 * diag2_slope, 2, 2);
+    }
+
+    context.moveTo(diag2_x1, diag2_y1);
+    context.lineTo(diag2_x2, diag2_y2);
+
+    context.strokeStyle = "#00FF00";
+    context.stroke();
+
+    return;
+    var d2_x_band = Math.abs(h2_x - d2_x) / band_count;
+    var d2_y_band = Math.abs(h2_y_bezier - d2_y) / band_count;
+
+    for (var i = 0; i <= band_count; i++) {
+      context.moveTo(d1_x +d_x_band * (i), d1_y + d_y_band * (i));
+      context.lineTo(h2_x + d2_x_band * i, h2_y_bezier - d2_y_band * i);
+      var dy = (h2_y_bezier - d2_y_band * i) - (d1_y + d_y_band * (i));
+      var dx = (h2_x + d2_x_band * i) - (d1_x + d_x_band * (i));
+
+      var slope = dy / dx;
+      var seg_x = d1_x + d_x_band * (i) + (dx * i / band_count);
+      var seg_y = d1_y + d_y_band * (i) + ((dx * i / band_count) * slope);
+      context.fillRect(seg_x - 1, seg_y - 1, 2, 2);
+      context.lineTo(seg_x, seg_y);
+
+    }
+
+    context.stroke();
+
+  }
+
+  </script>
+
+</head>
+<body onmousemove="on_click(event); ">
+  <canvas id="canvas" width="1200" height="1200"></canvas>
+<!--  <img src="minnie_menor.png" id="minnie" /> -->
+</body>
+
+
+
+</html>
