@@ -1,6 +1,6 @@
 <html>
 
-<body>
+<body style="background-color: #000000; color: #ffffff;">
 <canvas id="canvas1" width="400" height="400" style="border:0px solid #000000;">
 </canvas>
 
@@ -20,8 +20,8 @@ function init()
 
 function resize()
 {
-    canvas.width = window.innerWidth * .92;
-    canvas.height = window.innerHeight * .92;
+    //canvas.width = window.innerWidth * .92;
+    //canvas.height = window.innerHeight * .92;
     render();
 }
 
@@ -42,9 +42,8 @@ function render()
     //var percent = 25;
 
     var now = Date.now(); // UTC
-
-    var begin = Date.UTC(2018, 03, 16, 17, 0, 0);
-    var end = Date.UTC(2018, 03, 23, 17, 0, 0);
+    var begin = Date.UTC(2018, 05, 04, 17, 0, 0);
+    var end = Date.UTC(2018, 05, 11, 17, 0, 0);
 
     var total = end - begin;
     var percent = (now - begin) / total * 100;
@@ -53,7 +52,7 @@ function render()
     context.beginPath();
     var arcWidth = size * .12;
     context.lineWidth = arcWidth;
-    context.strokeStyle = "#0000ff";
+    context.strokeStyle = "#00ff00";
     var startAngle = -PI / 2;
     var endAngle = -PI/2 + (percent / 100.0) * 2 * PI;
 
@@ -61,11 +60,11 @@ function render()
     context.stroke();
 
     context.beginPath();
-    context.strokeStyle = "#ffffcc";
+    context.strokeStyle = "#000050";
     context.arc(width / 2, height / 2, width / 2 - arcWidth / 2 , startAngle, endAngle, true);
     context.stroke();
 
-    context.strokeStyle = "#000000";
+    context.strokeStyle = "#ffff00";
     context.lineWidth = 1;
     context.beginPath();
     context.arc(width / 2, height / 2, width / 2, 0, 2 * PI);
@@ -75,6 +74,7 @@ function render()
     context.stroke();
 
     context.font = "72px Arial";
+    context.fillStyle = "#ffffcc";
     context.textAlign = "center";
     context.textBaseline = "middle";
     context.fillText(Math.round(percent) + "%", width / 2, height / 2);
